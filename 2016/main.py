@@ -1,7 +1,7 @@
 def day1():
     inp = ''
     with open('day1.txt','r') as f:
-        inp = f[0].split(', ')
+        inp = f.readline().split(', ')
 
     locs = []
     part2loc = None
@@ -56,7 +56,6 @@ def day1():
             x -= dist
 
     print('Bunny HQ is ' + str(abs(x) + abs(y)) + ' blocks away')
-
     print('Bunny HQ is ' + str(abs(part2loc[0]) + abs(part2loc[1])) + ' blocks away')
 
 def day2():
@@ -121,6 +120,28 @@ def day2():
         code += keypad[y][x]
 
     print('Bathroom code: ' + code)
+    
+def day3():
+    inp = []
+    inp2 = []
+    with open('day3.txt','r') as f:
+        inp2 = [[],[],[]]
+        
+        for line in f:
+            spl = line.split()
+            inp.append([int(x) for x in spl])
+            inp2[0].append(int(spl[0]))
+            inp2[1].append(int(spl[1]))
+            inp2[2].append(int(spl[2]))
+            
+        inp2 = inp2[0] + inp2[1] + inp2[2]
+    
+    bork = len([None for x in inp if x[0] + x[1] > x[2] and x[1] + x[2] > x[0] and x[0] + x[2] > x[1]])
+    print(str(bork) + ' triangles out of ' + str(len(inp)) + ' are possible')
+    
+    bork = len([None for x in range(0, len(inp2), 3) if inp2[x] + inp2[x+1] > inp2[x+2] and inp2[x+1] + inp2[x+2] > inp2[x+0] and inp2[x+0] + inp2[x+2] > inp2[x+1]])
+    print(str(bork) + ' triangles out of ' + str(len(inp)) + ' are possible')
 
 day1()
 day2()
+day3()
