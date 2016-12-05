@@ -167,8 +167,43 @@ def day4():
                 print('Storage room sector ID: ' + str(num))
                 
     print('The arbitrarily required sum is ' + str(count))
-
+    
+import hashlib
+def day5():
+    inp = 'ffykfhsq'
+    index = 0
+    hash = inp
+    password = ''
+    
+    while len(password) < 8:
+        while hash[:5] != '00000':
+            hash = hashlib.md5((inp + str(index)).encode('utf-8')).hexdigest()
+            index += 1
+            
+        password += hash[5]
+        index += 1
+        hash = inp
+    
+    print(password)
+        
+    password = ['_','_','_','_','_','_','_','_']
+    index = 0
+    hash = inp
+    while '_' in password:
+        while hash[:5] != '00000':
+            hash = hashlib.md5((inp + str(index)).encode('utf-8')).hexdigest()
+            index += 1
+        
+        if int(hash[5],16) < 8:
+            if password[int(hash[5],16)] == '_':
+                password[int(hash[5],16)] = hash[6]
+                
+        hash = inp
+        index += 1
+    
+    print(''.join(password))
 day1()
 day2()
 day3()
 day4()
+day5()
