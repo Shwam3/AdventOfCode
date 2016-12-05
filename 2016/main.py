@@ -141,7 +141,34 @@ def day3():
     
     bork = len([None for x in range(0, len(inp2), 3) if inp2[x] + inp2[x+1] > inp2[x+2] and inp2[x+1] + inp2[x+2] > inp2[x+0] and inp2[x+0] + inp2[x+2] > inp2[x+1]])
     print(str(bork) + ' triangles out of ' + str(len(inp)) + ' are possible')
+    
+import collections
+def day4():
+    inp = []
+    with open('day4.txt','r') as f:
+        for line in f:
+            line = line.rstrip()
+            inp.append(line.replace('-','$',line.count('-')-1).split('-'))
+            
+    count = 0
+    for line in inp:
+        common = collections.Counter(''.join(sorted(line[0].replace('$','')))).most_common()
+        common = list(sorted(common, key=lambda x: (-x[1], x[0])))[:5]
+        common = ''.join([x[0] for x in common])
+        
+        if common in line[1]:
+            num = int(line[1][0:line[1].find('[')])
+            count += num
+
+            name = line[0]
+            for i in range(num):
+                name = ''.join([(' ' if x == '$' or x == ' ' else ('a' if x == 'z' else chr(ord(x)+1))) for x in name])
+            if 'northpole' in name:
+                print('Storage room sector ID: ' + str(num))
+                
+    print('The arbitrarily required sum is ' + str(count))
 
 day1()
 day2()
 day3()
+day4()
