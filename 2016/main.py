@@ -120,28 +120,28 @@ def day2():
         code += keypad[y][x]
 
     print('Bathroom code: ' + code)
-    
+
 def day3():
     inp = []
     inp2 = []
     with open('day3.txt','r') as f:
         inp2 = [[],[],[]]
-        
+
         for line in f:
             spl = line.split()
             inp.append([int(x) for x in spl])
             inp2[0].append(int(spl[0]))
             inp2[1].append(int(spl[1]))
             inp2[2].append(int(spl[2]))
-            
+
         inp2 = inp2[0] + inp2[1] + inp2[2]
-    
+
     bork = len([None for x in inp if x[0] + x[1] > x[2] and x[1] + x[2] > x[0] and x[0] + x[2] > x[1]])
     print(str(bork) + ' triangles out of ' + str(len(inp)) + ' are possible')
-    
+
     bork = len([None for x in range(0, len(inp2), 3) if inp2[x] + inp2[x+1] > inp2[x+2] and inp2[x+1] + inp2[x+2] > inp2[x+0] and inp2[x+0] + inp2[x+2] > inp2[x+1]])
     print(str(bork) + ' triangles out of ' + str(len(inp)) + ' are possible')
-    
+
 import collections
 def day4():
     inp = []
@@ -149,13 +149,13 @@ def day4():
         for line in f:
             line = line.rstrip()
             inp.append(line.replace('-','$',line.count('-')-1).split('-'))
-            
+
     count = 0
     for line in inp:
         common = collections.Counter(''.join(sorted(line[0].replace('$','')))).most_common()
         common = list(sorted(common, key=lambda x: (-x[1], x[0])))[:5]
         common = ''.join([x[0] for x in common])
-        
+
         if common in line[1]:
             num = int(line[1][0:line[1].find('[')])
             count += num
@@ -165,27 +165,27 @@ def day4():
                 name = ''.join([(' ' if x == '$' or x == ' ' else ('a' if x == 'z' else chr(ord(x)+1))) for x in name])
             if 'northpole' in name:
                 print('Storage room sector ID: ' + str(num))
-                
+
     print('The arbitrarily required sum is ' + str(count))
-    
+
 import hashlib
 def day5():
     inp = 'ffykfhsq'
     index = 0
     hash = inp
     password = ''
-    
+
     while len(password) < 8:
         while hash[:5] != '00000':
             hash = hashlib.md5((inp + str(index)).encode('utf-8')).hexdigest()
             index += 1
-            
+
         password += hash[5]
         index += 1
         hash = inp
-    
+
     print('Password 1: ' + password)
-        
+
     password = ['_','_','_','_','_','_','_','_']
     index = 0
     hash = inp
@@ -193,16 +193,16 @@ def day5():
         while hash[:5] != '00000':
             hash = hashlib.md5((inp + str(index)).encode('utf-8')).hexdigest()
             index += 1
-        
+
         if int(hash[5],16) < 8:
             if password[int(hash[5],16)] == '_':
                 password[int(hash[5],16)] = hash[6]
-                
+
         hash = inp
         index += 1
-    
+
     print('Password 2: ' + ''.join(password))
-    
+
 def day6():
     inp = ['','','','','','','','']
     with open('day6.txt','r') as f:
@@ -210,12 +210,62 @@ def day6():
             line = line.rstrip()
             for i in range(len(line)):
                 inp[i] = (inp[i] if len(inp) > i else '') + line[i]
-                
+
     code1 = ''.join([collections.Counter(x).most_common()[0][0] for x in inp])
     code2 = ''.join([collections.Counter(x).most_common()[-1][0] for x in inp])
-    
+
     print('Message 1: ' + code1)
     print('Message 2: ' + code2)
+
+def day7():
+    inp = []
+    with open('day7.txt','r') as f:
+        for line in f:
+            inp.append(line.rstrip().replace(']','[').split('['))
+
+    tls = 0
+    ssl = 0
+    for line in inp:
+        hyperABBA = False
+        hyperABA = False
+        superABBA = False
+        superABA = False
+        ABA = []
+
+        for i in line[::2]:
+            if len(i) > 3:
+                for offset in range(len(i)-3):
+                    if i[offset] == i[offset+3] and i[offset+1] == i[offset+2] and i[offset] != i[offset+1]:
+                        superABBA = True
+                        break
+
+            if len(i) > 2:
+                for offset in range(len(i)-2):
+                    if i[offset] == i[offset+2] and i[offset] != i[offset+1]:
+                        ABA.append((i[offset],i[offset+1]))
+                        superABA = True
+
+        for i in line[1::2]:
+            if len(i) > 3:
+                for offset in range(len(i)-3):
+                    if i[offset] == i[offset+3] and i[offset+1] == i[offset+2] and i[offset] != i[offset+1]:
+                        hyperABBA = True
+                        break
+
+            if len(i) > 2:
+                for offset in range(len(i)-2):
+                    if i[offset] == i[offset+2] and i[offset] != i[offset+1]:
+                        if (i[offset+1],i[offset]) in ABA:
+                            hyperABA = True
+                            break
+
+        if not hyperABBA and superABBA:
+            tls += 1
+        if hyperABA:
+            ssl += 1
+
+    print('TLS supporting addresses: ' + str(tls))
+    print('SSL supporting addresses: ' + str(ssl))
 
 day1()
 day2()
@@ -223,3 +273,4 @@ day3()
 day4()
 #day5()
 day6()
+day7()
