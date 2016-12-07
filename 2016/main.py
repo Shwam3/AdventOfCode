@@ -184,7 +184,7 @@ def day5():
         index += 1
         hash = inp
     
-    print(password)
+    print('Password 1: ' + password)
         
     password = ['_','_','_','_','_','_','_','_']
     index = 0
@@ -201,9 +201,25 @@ def day5():
         hash = inp
         index += 1
     
-    print(''.join(password))
+    print('Password 2: ' + ''.join(password))
+    
+def day6():
+    inp = ['','','','','','','','']
+    with open('day6.txt','r') as f:
+        for line in f:
+            line = line.rstrip()
+            for i in range(len(line)):
+                inp[i] = (inp[i] if len(inp) > i else '') + line[i]
+                
+    code1 = ''.join([collections.Counter(x).most_common()[0][0] for x in inp])
+    code2 = ''.join([collections.Counter(x).most_common()[-1][0] for x in inp])
+    
+    print('Message 1: ' + code1)
+    print('Message 2: ' + code2)
+
 day1()
 day2()
 day3()
 day4()
-day5()
+#day5()
+day6()
