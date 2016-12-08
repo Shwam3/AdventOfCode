@@ -267,6 +267,53 @@ def day7():
     print('TLS supporting addresses: ' + str(tls))
     print('SSL supporting addresses: ' + str(ssl))
 
+def day8():
+    inp = []
+    with open('day8.txt','r') as f:
+        for line in f:
+            inp.append(line.rstrip())
+
+    screen = []
+    for y in range(6):
+        screen.append(' '*50)
+
+    for line in inp:
+        if line[:4] == 'rect':
+            w = int(line[5:line.find('x')])
+            h = int(line[line.find('x')+1:])
+
+            for y in range(h):
+                screen[y] = screen[y].replace(' ','#',w)
+
+        elif line[:13] == 'rotate row y=':
+            nums = line[13:].split(' by ')
+            row = int(nums[0])
+            shift = int(nums[1])
+
+            screen[row] = (screen[row][-shift:] + screen[row])[:50]
+
+        elif line[:16] == 'rotate column x=':
+            nums = line[16:].split(' by ')
+            col = int(nums[0])
+            shift = int(nums[1])
+
+            dat = ''
+            for y in range(6):
+                dat += screen[y][col]
+
+            dat = (dat[-shift:] + dat)[:50]
+
+            for y in range(6):
+                screen[y] = screen[y][:col] + dat[y] + screen[y][col+1:]
+
+    lit = 0
+    for x in screen:
+        lit += len(x.replace(' ',''))
+
+    print(str(lit) + ' pixels are lit')
+    print('The screen:')
+    [print('>  ' + x) for x in screen]
+
 day1()
 day2()
 day3()
@@ -274,3 +321,4 @@ day4()
 #day5()
 day6()
 day7()
+day8()
